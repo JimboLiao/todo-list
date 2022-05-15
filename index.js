@@ -1,7 +1,7 @@
 window.addEventListener('load', () => {
+    tasks_content = JSON.parse(localStorage.getItem('tasks_content')) || [];
     const form = document.querySelector("#new-task-form");
     const input = document.querySelector("#new-task-input");
-    const list_el = document.querySelector("#tasks");
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -12,6 +12,34 @@ window.addEventListener('load', () => {
             alert("Please fill out the task");
             return ;
         }
+
+        tasks_content.push(task);
+        localStorage.setItem('tasks_content', JSON.stringify(tasks_content));
+        input.value = "";
+        showTask();
+        
+    })
+    showTask();
+})
+
+function showTask(){
+    const form = document.querySelector("#new-task-form");
+    const input = document.querySelector("#new-task-input");
+    const list_el = document.querySelector("#tasks");
+    list_el.innerHTML = "";
+
+    //debug
+    console.log(tasks_content);
+    // -----
+
+    tasks_content.forEach((item, index) => {
+        task = item;
+        //debug
+        //console.log(task);
+        //console.log(index);
+        // -----
+
+
         const task_el = document.createElement("div");
         task_el.classList.add("task");
 
@@ -46,9 +74,7 @@ window.addEventListener('load', () => {
 
         list_el.appendChild(task_el);
 
-        input.value = "";
-
-        task_edit_el.addEventListener('click', () => {
+        task_edit_el.addEventListener('click', e => {
             if(task_edit_el.innerText.toLowerCase() == "edit"){
                 task_input_el.removeAttribute("readonly");
                 task_input_el.focus();
@@ -56,13 +82,25 @@ window.addEventListener('load', () => {
             } else{
                 task_input_el.setAttribute("readonly", "readonly");
                 task_edit_el.innerText = "Edit";
+                tasks_content[index] = task_input_el.value;
+                //debug 
+                //console.log(tasks_content);
+                // -----
+                localStorage.setItem('tasks_content', JSON.stringify(tasks_content));
+                showTask();
             }
-
         })
 
         task_done_el.addEventListener('click', () =>{
+            tasks_content.splice(index,1);
+            //debug 
+            //console.log(tasks_content);
+            //console.log(index);
+            //console.log(task);
+            // -----
+            localStorage.setItem('tasks_content', JSON.stringify(tasks_content));
             list_el.removeChild(task_el);
+            showTask();
         })
     })
-})
-
+}
