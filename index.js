@@ -1,5 +1,5 @@
 window.addEventListener('load', () => {
-    tasks_content = JSON.parse(localStorage.getItem('tasks_content')) || [];
+    tasks_content = JSON.parse(localStorage.getItem('tasks_content')) || []; //get local storage data
     const form = document.querySelector("#new-task-form");
     const input = document.querySelector("#new-task-input");
 
@@ -15,7 +15,7 @@ window.addEventListener('load', () => {
 
         tasks_content.push(task);
         localStorage.setItem('tasks_content', JSON.stringify(tasks_content));
-        input.value = "";
+        input.value = ""; //clear input contents
         showTask();
         
     })
@@ -28,17 +28,8 @@ function showTask(){
     const list_el = document.querySelector("#tasks");
     list_el.innerHTML = "";
 
-    //debug
-    console.log(tasks_content);
-    // -----
-
     tasks_content.forEach((item, index) => {
         task = item;
-        //debug
-        //console.log(task);
-        //console.log(index);
-        // -----
-
 
         const task_el = document.createElement("div");
         task_el.classList.add("task");
@@ -82,25 +73,16 @@ function showTask(){
             } else{
                 task_input_el.setAttribute("readonly", "readonly");
                 task_edit_el.innerText = "Edit";
-                tasks_content[index] = task_input_el.value;
-                //debug 
-                //console.log(tasks_content);
-                // -----
-                localStorage.setItem('tasks_content', JSON.stringify(tasks_content));
-                showTask();
+                tasks_content[index] = task_input_el.value; // update tasks_content[index]
+                localStorage.setItem('tasks_content', JSON.stringify(tasks_content)); // update tasks_content to localStorage
+                showTask(); // update list
             }
         })
 
         task_done_el.addEventListener('click', () =>{
-            tasks_content.splice(index,1);
-            //debug 
-            //console.log(tasks_content);
-            //console.log(index);
-            //console.log(task);
-            // -----
-            localStorage.setItem('tasks_content', JSON.stringify(tasks_content));
-            list_el.removeChild(task_el);
-            showTask();
+            tasks_content.splice(index,1); // remove tasks_content[index]
+            localStorage.setItem('tasks_content', JSON.stringify(tasks_content)); // update tasks_content to localStorage
+            showTask(); // update list  
         })
     })
 }
